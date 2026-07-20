@@ -1,0 +1,33 @@
+env: development
+
+server:
+  host: 0.0.0.0
+  port: 8080
+
+ws:
+  PingInterval: 30s
+  PingTimeout: 120s
+
+database:
+  driver: sqlite
+  database: ccsim_svr.db
+
+redis:
+  enabled: false
+  addr: 127.0.0.1:6379
+  password: ""
+  db: 0
+  registryTTL: 90
+
+trace:
+  name: ccsim-svr
+  disabled: true
+  endpoint: logs/ccsim-trace.log
+  sampler: 1.0
+  batcher: file
+
+log:
+  appName: ccsim-svr
+  Output:
+    - stdout
+    - ./logs/app.log
