@@ -85,8 +85,29 @@ func (h *AuthHandler) handleVisitorAuth(ctx context.Context, conn ws.Connection,
 		return err
 	}
 
+	// 推送当前客服在线状态，避免访客连接时已在线客服却显示离线
+	h.sendAgentStatus(ctx, conn, conn.GetTenantNo())
+
 	h.sendOfflinePush(ctx, conn, protocol.RoleVisitor, visitor.ID)
 	return nil
+}
+
+// sendAgentStatus 向指定连接推送当前客服在线状态
+func (h *AuthHandler) sendAgentStatus(ctx context.Context, conn ws.Connection, tenantNo string) {
+	count, err := h.agentService.GetOnlineCount(ctx, tenantNo)
+	if err != nil {
+		logger.ErrorfCtx(ctx, "获取在线客服数失败, 租户: %s, 错误: %v", tenantNo, err)
+		return
+	}
+
+	msg := protocol.AgentStatusMessage{
+		ServerMessage:  protocol.ServerMessage{Type: protocol.ServerMsgAgentStatus},
+		OnlineCount:    int(count),
+		HasOnlineAgent: count > 0,
+	}
+	if err := sendJSON(ctx, conn, msg); err != nil {
+		logger.ErrorfCtx(ctx, "推送客服在线状态失败, 连接ID: %s, 错误: %v", conn.GetID(), err)
+	}
 }
 
 // handleAgentAuth 处理客服认证
