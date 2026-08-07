@@ -3,7 +3,7 @@ module chihqiang/ccsim-svr
 go 1.25.11
 
 require (
-	github.com/chihqiang/infra-go v0.0.0-20260719160150-fbb5f696a3af
+	github.com/chihqiang/infra-go v0.0.0-20260807101611-4bce5382dee1
 	github.com/google/uuid v1.6.0
 	github.com/redis/go-redis/v9 v9.21.0
 	gorm.io/gorm v1.31.2
